@@ -8,7 +8,7 @@ import pymysql
 
 
 class UniversityPipeline(object):
-    insertSql = '''insert into  sina_abroad(
+    insertSql = '''insert into  qq_abroad_all(
     country_name,
     country_link,
     area_name,
@@ -79,3 +79,56 @@ class UniversityPipeline(object):
         self.connect.close()
 
 
+
+class AreaPipeline(object):
+    insertSql = '''insert into area(
+    country,
+    code,
+    provice,
+    city,
+    remarks,
+    last_update_date
+    )
+    values(
+    '{country}',
+    '{code}',
+    '{provice}',
+    '{city}',
+    '{remarks}',
+    '{last_update_date}'
+    )'''
+  
+
+    def __init__(self, settings):
+        self.connect = pymysql.connect(
+             host='localhost',
+             port=3306,
+             user='test',  
+             passwd='123456',  
+             db='university',  
+             charset='utf8'   
+)
+
+    def process_item(self, item, spider):
+        sqltext = self.insertSql.format(
+                country=item.get('country'),
+                code=item.get('code'),
+                provice=item.get('provice'),
+                city=item.get('city'),
+                remarks=item.get('remarks'),
+                last_update_date=item.get('last_update_date')
+               )
+        self.cursor.execute(sqltext)
+        return item
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.settings)
+
+    def open_spider(self, spider):
+        self.cursor = self.connect.cursor();
+        self.connect.autocommit(True)
+
+    def close_spider(self, spider):
+        self.cursor.close()
+        self.connect.close()

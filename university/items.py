@@ -19,8 +19,17 @@ class UniversityItem(scrapy.Item):
     campus = scrapy.Field()
     native_uni_name = scrapy.Field()
     chinese_uni_name = scrapy.Field()
+    english_uni_name = scrapy.Field()
     website = scrapy.Field()
     remarks = scrapy.Field()
     last_update_date = scrapy.Field(serializer=str)
     
-    
+
+class AreaItem(scrapy.Item):
+    country = scrapy.Field()
+    code = scrapy.Field()
+    provice = scrapy.Field()
+    city = scrapy.Field()
+    remarks = scrapy.Field()
+    last_update_date = scrapy.Field(serializer=str)
+
